@@ -50,9 +50,7 @@ public final class Trie {
             }
 
             if (currentNode.info != nextCh) return false;
-
-            if ((i == string.length() - 1) && !currentNode.isEnd)
-                return false;
+            if ((i == string.length() - 1) && !currentNode.isEnd) return false;
         }
         return true;
     }
@@ -78,9 +76,9 @@ public final class Trie {
             currentNode = currentNode.level;
             res += currentNode.info;
             if (currentNode.isEnd) collector.add(res);
-        }
 
-        addCh(currentNode, res, collector);
+            addCh(currentNode, res, collector);
+        }
 
         while (currentNode.hasNextLevel()) {
             currentNode = currentNode.nextLevel;
