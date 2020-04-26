@@ -152,4 +152,53 @@ public final class Trie {
             }
         }
     }
-   }
+
+    public void delete(String string) throws IllegalArgumentException {
+        Node currentNode = root;
+        string = string.toLowerCase();
+
+        if (!find(string)) throw new IllegalArgumentException("Слова нет");
+
+        for (int i = 0; i < string.length(); i++) {
+            char nextCh = string.charAt(i);
+            currentNode = currentNode.level;
+            while (currentNode.hasNextLevel() && currentNode.info != nextCh) {
+                currentNode = currentNode.nextLevel;
+            }
+        }
+
+        for (int i = string.length(); i > 0; i--) {
+            if (!currentNode.hasLevel() && !currentNode.hasNextLevel()) {
+                currentNode = currentNode.parent;
+                if (!currentNode.level.hasNextLevel()) {
+                    currentNode.level = null;
+                }
+                else {
+                    Node tmpCur = currentNode;
+                    tmpCur = tmpCur.level;
+                    while (tmpCur.nextLevel.hasNextLevel()) {
+                        tmpCur = tmpCur.nextLevel;
+                    }
+                    tmpCur.nextLevel = null;
+                }
+            }
+            else if (currentNode.hasLevel() && currentNode.isEnd) {
+                currentNode.isEnd = false;
+                currentNode = currentNode.parent;
+            }
+            else if (!currentNode.parent.info.equals(currentNode.info) && currentNode.hasNextLevel() && !currentNode.hasLevel()) {
+                Node tmpCur = currentNode.parent.level;
+                while (!tmpCur.nextLevel.info.equals(currentNode.info)) {
+                    tmpCur = tmpCur.nextLevel;
+                }
+                tmpCur.nextLevel = tmpCur.nextLevel.nextLevel;
+                currentNode = currentNode.parent;
+            }
+            else if (currentNode.parent.level.info.equals(currentNode.info) && currentNode.hasNextLevel() && !currentNode.hasLevel()) {
+                currentNode = currentNode.parent;
+                currentNode.level = currentNode.level.nextLevel;
+            }
+            else if (currentNode.hasLevel()) currentNode = currentNode.parent;
+        }
+    }
+}
